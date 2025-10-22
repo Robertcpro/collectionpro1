@@ -8,7 +8,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Chart.js for visualising results -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <meta name="description" content="Estimate out-of-network revenue leakage and the recovery impact with CollectionPro for orthopedic and neurosurgeons."/>
+  <meta name="description" content="Estimate out-of-network revenue leakage and the recovery impact with CollectionPro for your practice."/>
   <style>
     :root{
       --cp-primary:#0d3b46; /* deep teal */
@@ -38,40 +38,28 @@
     <section class="grid grid-cols-1 lg:grid-cols-5 gap-6 items-start">
       <!-- Inputs Card -->
       <div class="lg:col-span-2 bg-white rounded-2xl p-6 shadow-soft border border-slate-100">
-        <h2 class="text-lg font-semibold mb-4">Practice Inputs</h2>
+        <h2 class="text-lg font-semibold mb-4">Practice Inputs For Out Of Network Claims (OON)</h2>
         <form id="calc-form" class="space-y-4">
           <div class="grid grid-cols-2 gap-4">
+            <!-- Monthly out‑of‑network cases -->
             <label class="col-span-2">
-              <span class="text-sm text-slate-600">Monthly surgical cases</span>
-              <input id="cases" type="number" inputmode="numeric" min="0" value="0" class="mt-1 w-full rounded-xl border-slate-300 focus:border-[var(--cp-primary)] focus:ring-[var(--cp-primary)]"/>
+              <span class="text-sm text-slate-600">What is your Monthly OON Cases?</span>
+              <input id="cases" type="number" inputmode="numeric" min="0" placeholder="50" class="mt-1 w-full rounded-xl border-slate-300 focus:border-[var(--cp-primary)] focus:ring-[var(--cp-primary)]"/>
             </label>
+            <!-- Average allowed amount per case -->
             <label>
-              <span class="text-sm text-slate-600">Avg. allowed per case ($)</span>
-              <input id="avgCharge" type="number" inputmode="decimal" min="0" value="0" class="mt-1 w-full rounded-xl border-slate-300 focus:border-[var(--cp-primary)] focus:ring-[var(--cp-primary)]"/>
+              <span class="text-sm text-slate-600">What is your AVG Allowed Amount per Case for OON Claims?</span>
+              <input id="avgCharge" type="number" inputmode="decimal" min="0" placeholder="1500" class="mt-1 w-full rounded-xl border-slate-300 focus:border-[var(--cp-primary)] focus:ring-[var(--cp-primary)]"/>
             </label>
+            <!-- Percentage of out‑of‑network claim denial -->
             <label>
-              <span class="text-sm text-slate-600">% out-of-network</span>
-              <input id="pctOon" type="number" inputmode="decimal" min="0" max="100" value="0" class="mt-1 w-full rounded-xl border-slate-300 focus:border-[var(--cp-primary)] focus:ring-[var(--cp-primary)]"/>
+              <span class="text-sm text-slate-600">What is the Denial % for OON Claims?</span>
+              <input id="denialRate" type="number" inputmode="decimal" min="0" max="100" placeholder="50" class="mt-1 w-full rounded-xl border-slate-300 focus:border-[var(--cp-primary)] focus:ring-[var(--cp-primary)]"/>
             </label>
+            <!-- Percentage of collection on remaining out‑of‑network claims (i.e. non‑denied claims) -->
             <label>
-              <span class="text-sm text-slate-600">Claim denial rate %</span>
-              <input id="denialRate" type="number" inputmode="decimal" min="0" max="100" value="0" class="mt-1 w-full rounded-xl border-slate-300 focus:border-[var(--cp-primary)] focus:ring-[var(--cp-primary)]"/>
-            </label>
-            <label>
-              <span class="text-sm text-slate-600">Current recovery on denied %</span>
-              <input id="currentRecovery" type="number" inputmode="decimal" min="0" max="100" value="0" class="mt-1 w-full rounded-xl border-slate-300 focus:border-[var(--cp-primary)] focus:ring-[var(--cp-primary)]"/>
-            </label>
-            <label>
-              <span class="text-sm text-slate-600">CollectionPro uplift % <span class="text-slate-400">(Minimun 50)</span></span>
-              <input id="uplift" type="number" inputmode="decimal" min="0" max="100" value="0" class="mt-1 w-full rounded-xl border-slate-300 focus:border-[var(--cp-primary)] focus:ring-[var(--cp-primary)]"/>
-            </label>
-            <label>
-              <span class="text-sm text-slate-600">Current AR days</span>
-              <input id="currentAR" type="number" inputmode="numeric" min="0" value="0" class="mt-1 w-full rounded-xl border-slate-300 focus:border-[var(--cp-primary)] focus:ring-[var(--cp-primary)]"/>
-            </label>
-            <label>
-              <span class="text-sm text-slate-600">AR days with CollectionPro</span>
-              <input id="cpAR" type="number" inputmode="numeric" min="0" value="0" class="mt-1 w-full rounded-xl border-slate-300 focus:border-[var(--cp-primary)] focus:ring-[var(--cp-primary)]"/>
+              <span class="text-sm text-slate-600">What is the Collection % for remaining OON Claims?</span>
+              <input id="collectionRate" type="number" inputmode="decimal" min="0" max="100" placeholder="25" class="mt-1 w-full rounded-xl border-slate-300 focus:border-[var(--cp-primary)] focus:ring-[var(--cp-primary)]"/>
             </label>
           </div>
 
@@ -87,24 +75,18 @@
       <div class="lg:col-span-3 bg-white rounded-2xl p-6 shadow-soft border border-slate-100">
         <h2 class="text-lg font-semibold mb-2">Estimated Impact</h2>
         <div class="grid md:grid-cols-2 gap-4">
+          <!-- Updated results without formula hints -->
           <div class="rounded-xl border border-slate-200 p-4">
-            <p class="text-sm text-slate-500">Monthly Out-of-Network Revenue at Risk</p>
+            <p class="text-sm text-slate-500">Your Monthly Out‑of‑Network Revenue at Risk</p>
             <p id="riskMonthly" class="text-2xl md:text-3xl font-bold text-slate-900">$0</p>
-            <p class="text-xs text-slate-400">(Cases × Avg. Allowed × % OON × Denial % × (1 - Current Recovery %))</p>
           </div>
           <div class="rounded-xl border border-slate-200 p-4">
             <p class="text-sm text-slate-500">Potential Monthly Recovery with CollectionPro</p>
             <p id="recoveryMonthly" class="text-2xl md:text-3xl font-bold text-[var(--cp-accent)]">$0</p>
-            <p class="text-xs text-slate-400">(Revenue at risk × Uplift %)</p>
           </div>
           <div class="rounded-xl border border-slate-200 p-4">
-            <p class="text-sm text-slate-500">12-Month Recovery Projection</p>
+            <p class="text-sm text-slate-500">12‑Months Recovery Projection</p>
             <p id="recoveryAnnual" class="text-2xl md:text-3xl font-bold">$0</p>
-          </div>
-          <div class="rounded-xl border border-slate-200 p-4">
-            <p class="text-sm text-slate-500">Cash-Flow Benefit from Faster AR</p>
-            <p id="cashflow" class="text-2xl md:text-3xl font-bold">$0</p>
-            <p class="text-xs text-slate-400">(Daily OON revenue × Days reduced)</p>
           </div>
         </div>
 
@@ -112,14 +94,6 @@
         <div id="resultSummary" class="mt-6">
           <!-- Textual summary to help users interpret results -->
           <p id="summaryText" class="text-slate-700 text-sm md:text-base leading-relaxed"></p>
-          <!-- Bar chart canvas: visually compare risk and recovery values -->
-          <canvas id="resultChart" class="my-4 w-full max-h-72"></canvas>
-          <!-- Lead capture form shown after calculation -->
-          <div id="leadForm" class="bg-slate-50 border border-slate-200 p-4 rounded-xl mt-4 hidden">
-            <p class="text-sm text-slate-600">Enter your email to receive a personalised recovery report and schedule a free audit.</p>
-            <input id="leadEmail" type="email" placeholder="Your email" class="mt-2 w-full rounded-xl border-slate-300 px-3 py-2 focus:border-[var(--cp-primary)] focus:ring-[var(--cp-primary)]" />
-            <button id="leadBtn" class="mt-3 w-full px-4 py-2 rounded-xl bg-[var(--cp-primary)] text-white font-semibold hover:opacity-90">Send My Report</button>
-          </div>
         </div>
 
         <div class="mt-6 grid md:grid-cols-3 gap-4">
@@ -127,16 +101,16 @@
             <p class="text-xs uppercase tracking-wide text-slate-500">Assumptions</p>
             <ul class="mt-2 text-sm list-disc list-inside text-slate-600">
               <li>Focus on out-of-network professional fees</li>
-              <li>Uplift reflects improved overturn rate & appeal yield</li>
-              <li>AR reduction improves working capital, not revenue</li>
+              <li>Collection % applies to the remaining (non-denied) claims</li>
+              <li>Projections are estimates; actual results vary by payer mix and documentation quality</li>
             </ul>
           </div>
           <div class="rounded-xl bg-slate-50 border border-slate-200 p-4">
             <p class="text-xs uppercase tracking-wide text-slate-500">Tips to Improve Accuracy</p>
             <ul class="mt-2 text-sm list-disc list-inside text-slate-600">
               <li>Use actual denial % from your clearinghouse</li>
-              <li>Enter your current overturn/recovery % on denied claims</li>
-              <li>Adjust AR days to your latest month-end</li>
+              <li>Enter the collection % you currently achieve on non-denied claims</li>
+              <li>Provide accurate case volumes and average allowed amounts</li>
             </ul>
           </div>
           <div class="rounded-xl bg-slate-50 border border-slate-200 p-4" id="cta">
@@ -147,6 +121,21 @@
           </div>
         </div>
       </div>
+    </section>
+
+    <!-- Chart and Lead Capture Section placed below inputs and results -->
+    <section id="chart-section" class="mt-6">
+      <!-- Horizontal bar chart canvas: visually compare risk and recovery values -->
+      <canvas id="resultChart" class="my-4 w-full max-h-72"></canvas>
+      <!-- Lead capture form shown after calculation -->
+      <div id="leadForm" class="bg-slate-50 border border-slate-200 p-4 rounded-xl mt-4 hidden">
+        <p class="text-sm text-slate-600">Enter your details to receive a personalised recovery report and schedule a free audit.</p>
+        <input id="leadName" type="text" placeholder="Your name" class="mt-2 w-full rounded-xl border-slate-300 px-3 py-2 focus:border-[var(--cp-primary)] focus:ring-[var(--cp-primary)]" />
+        <input id="leadPhone" type="tel" placeholder="Contact number" class="mt-2 w-full rounded-xl border-slate-300 px-3 py-2 focus:border-[var(--cp-primary)] focus:ring-[var(--cp-primary)]" />
+        <input id="leadEmail" type="email" placeholder="Your email" class="mt-2 w-full rounded-xl border-slate-300 px-3 py-2 focus:border-[var(--cp-primary)] focus:ring-[var(--cp-primary)]" />
+        <button id="leadBtn" class="mt-3 w-full px-4 py-2 rounded-xl bg-[var(--cp-primary)] text-white font-semibold hover:opacity-90">Send My Report</button>
+      </div>
+      <p class="mt-3 text-xs text-slate-400">Disclaimer: The figures provided are for illustrative purposes only. Actual results may vary based on payer mix, contracts, coding and documentation quality.</p>
     </section>
   </main>
 
@@ -162,59 +151,64 @@
     let resultChart;
 
     function calc(){
-      const cases = Math.max(0, Number($("cases").value||0));
-      const avgCharge = Math.max(0, Number($("avgCharge").value||0));
-      const pctOon = clampPct($("pctOon").value, 0, 100) / 100; 
-      const denialRate = clampPct($("denialRate").value, 0, 100) / 100; 
-      const currentRecovery = clampPct($("currentRecovery").value, 0, 100) / 100; 
-      const uplift = clampPct($("uplift").value, 0, 100) / 100; 
-      const currentAR = Math.max(0, Number($("currentAR").value||0));
-      const cpAR = Math.max(0, Number($("cpAR").value||0));
+      // Read values or fall back to placeholders
+      const cases = Math.max(0, Number($("cases").value || $("cases").placeholder || 0));
+      const avgCharge = Math.max(0, Number($("avgCharge").value || $("avgCharge").placeholder || 0));
+      // Percentages expressed as decimals
+      const denialRate = clampPct($("denialRate").value || $("denialRate").placeholder, 0, 100) / 100;
+      const collectionRate = clampPct($("collectionRate").value || $("collectionRate").placeholder, 0, 100) / 100;
 
-      const monthlyOonAllowed = cases * avgCharge * pctOon; // $ per month in OON allowed amounts
-      const deniedValue = monthlyOonAllowed * denialRate; // value denied initially
-      const unrecovered = deniedValue * (1 - currentRecovery); // what you’re not recovering now
-      const potentialRecovery = unrecovered * uplift; // what CP can add
+      // Total allowed revenue per month
+      const totalAllowed = cases * avgCharge;
+      // Value denied outright
+      const deniedValue = totalAllowed * denialRate;
+      // Allowed value after denials (remaining claims value)
+      const allowedAfterDenial = totalAllowed - deniedValue;
+      // Collection deficit: portion of remaining claims value that is not collected
+      const collectionDeficit = allowedAfterDenial * (1 - collectionRate);
+      // Overall revenue at risk combines denied and uncollected portions
+      const revenueAtRisk = deniedValue + collectionDeficit;
+      // Recovery range (40–60% of risk)
+      const minRecovery = revenueAtRisk * 0.40;
+      const maxRecovery = revenueAtRisk * 0.60;
+      const avgRecovery = revenueAtRisk * 0.50;
+      // Annual projections
+      const annualMinRecovery = minRecovery * 12;
+      const annualMaxRecovery = maxRecovery * 12;
+      const annualAvgRecovery = avgRecovery * 12;
 
-      // Cash-flow benefit: daily OON revenue * days reduced
-      const dailyOonRev = monthlyOonAllowed * 12 / 365; 
-      const daysReduced = Math.max(0, currentAR - cpAR);
-      const cashflowBenefit = dailyOonRev * daysReduced;
-
-      $("riskMonthly").textContent = currency(unrecovered);
-      $("recoveryMonthly").textContent = currency(potentialRecovery);
-      $("recoveryAnnual").textContent = currency(potentialRecovery * 12);
-      $("cashflow").textContent = currency(cashflowBenefit);
+      // Update result displays
+      $("riskMonthly").textContent = currency(revenueAtRisk);
+      $("recoveryMonthly").textContent = `${currency(minRecovery)} – ${currency(maxRecovery)}`;
+      $("recoveryAnnual").textContent = `${currency(annualMinRecovery)} – ${currency(annualMaxRecovery)}`;
 
       // Update narrative summary
       const summaryEl = $("summaryText");
       if(summaryEl){
-        const riskStr = currency(unrecovered);
-        const recoveryStr = currency(potentialRecovery);
-        const annualStr = currency(potentialRecovery * 12);
-        const cashflowStr = currency(cashflowBenefit);
+        const riskStr = currency(revenueAtRisk);
+        const recMinStr = currency(minRecovery);
+        const recMaxStr = currency(maxRecovery);
+        const annMinStr = currency(annualMinRecovery);
+        const annMaxStr = currency(annualMaxRecovery);
         summaryEl.innerHTML =
-          `Based on your inputs, you're currently losing <strong>${riskStr}</strong> per month due to denied out-of-network claims. With CollectionPro, you could recover approximately <strong>${recoveryStr}</strong> each month (about <strong>${annualStr}</strong> per year) and improve your cash flow by <strong>${cashflowStr}</strong> by reducing accounts-receivable days.`;
+          `Based on your inputs, your monthly out‑of‑network revenue at risk is <strong>${riskStr}</strong>. With CollectionPro, you could potentially recover between <strong>${recMinStr}–${recMaxStr}</strong> per month (about <strong>${annMinStr}–${annMaxStr}</strong> over 12 months).`;
       }
 
-      // Show lead form after calculation
-      const leadForm = $("leadForm");
-      if(leadForm){
-        leadForm.classList.remove('hidden');
-      }
 
-      // Prepare data array for the bar chart
-      const dataArr = [unrecovered, potentialRecovery, potentialRecovery * 12, cashflowBenefit];
-      // Update or create Chart.js instance
+      // Update the bar chart with three values: risk, monthly recovery (avg), and annual recovery (avg)
+      const dataArr = [revenueAtRisk, avgRecovery, annualAvgRecovery];
       const ctx = document.getElementById('resultChart').getContext('2d');
       if(resultChart){
+        // Update labels and data for the existing chart
+        resultChart.data.labels = ['Monthly Risk','Monthly Recovery','Annual Recovery'];
         resultChart.data.datasets[0].data = dataArr;
         resultChart.update();
       } else {
+        // Create a horizontal bar chart by setting indexAxis to 'y'
         resultChart = new Chart(ctx, {
           type: 'bar',
           data: {
-            labels: ['Monthly Risk', 'Monthly Recovery', 'Annual Recovery', 'Cash-Flow Benefit'],
+            labels: ['Monthly Risk','Monthly Recovery','Annual Recovery'],
             datasets: [
               {
                 label: 'USD',
@@ -222,20 +216,19 @@
                 backgroundColor: [
                   'rgba(13, 59, 70, 0.85)',
                   'rgba(214, 31, 38, 0.85)',
-                  'rgba(13, 59, 70, 0.65)',
-                  'rgba(214, 31, 38, 0.65)'
+                  'rgba(13, 59, 70, 0.65)'
                 ],
                 borderWidth: 0
               }
             ]
           },
           options: {
+            indexAxis: 'y',
             scales: {
-              y: {
+              x: {
                 beginAtZero: true,
                 ticks: {
                   callback: function(value){
-                    // Format y-axis ticks as currency without decimals
                     return '$' + value.toLocaleString();
                   }
                 }
@@ -255,8 +248,16 @@
       return Math.min(max, Math.max(min, n));
     }
 
-    $("calcBtn").addEventListener('click', calc);
-    document.getElementById('calc-form').addEventListener('change', ()=>{ /* live-ish */ calc(); });
+    // When calculate button is clicked, run calculation and reveal the lead capture form
+    $("calcBtn").addEventListener('click', () => {
+      calc();
+      const leadForm = $("leadForm");
+      if(leadForm){
+        leadForm.classList.remove('hidden');
+      }
+    });
+    // Only calculate on button click; do not auto-update on input change
+    // document.getElementById('calc-form').addEventListener('change', ()=>{ /* live-ish */ calc(); });
 
     // Hide lead form and reset summary/chart when user resets the form
     document.getElementById('calc-form').addEventListener('reset', () => {
@@ -277,9 +278,15 @@
     // Handle lead form submission with a simple alert (no backend integration)
     document.getElementById('leadBtn').addEventListener('click', (e) => {
       e.preventDefault();
-      const email = document.getElementById('leadEmail').value;
-      if(email){
-        alert('Thank you! We will send your personalised recovery report to ' + email + '.');
+      const name = (document.getElementById('leadName').value || '').trim();
+      const phone = (document.getElementById('leadPhone').value || '').trim();
+      const email = (document.getElementById('leadEmail').value || '').trim();
+      if(name && email){
+        alert('Thank you, ' + name + '! We will send your personalised recovery report to ' + email + '.');
+      } else if(!name && !email){
+        alert('Please enter your name and a valid email address.');
+      } else if(!name){
+        alert('Please enter your name.');
       } else {
         alert('Please enter a valid email address.');
       }
