@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CollectionPro • Revenue Recovery Calculator</title>
+  <title>CollectionPro • Revenue Recovery Estimator</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Chart.js for visualising results -->
@@ -29,7 +29,7 @@
         <p class="text-sm md:text-base text-slate-500">Estimate your out-of-network revenue leakage and potential recovery with CollectionPro.</p>
       </div>
       <div class="ml-auto hidden md:flex items-center gap-2">
-        <a href="#cta" class="inline-flex items-center px-3 py-2 rounded-lg bg-[var(--cp-accent)] text-white text-sm font-semibold hover:opacity-90">Book Free Audit</a>
+        <a href="#cta" class="inline-flex items-center px-3 py-2 rounded-lg bg-[var(--cp-accent)] text-white text-sm font-semibold hover:opacity-90">Free Evalution</a>
       </div>
     </div>
   </header>
@@ -38,27 +38,27 @@
     <section class="grid grid-cols-1 lg:grid-cols-5 gap-6 items-start">
       <!-- Inputs Card -->
       <div class="lg:col-span-2 bg-white rounded-2xl p-6 shadow-soft border border-slate-100">
-        <h2 class="text-lg font-semibold mb-4">Practice Inputs For Out Of Network Claims (OON)</h2>
+        <h2 class="text-lg font-semibold mb-4">Practice Inputs For Out-Of-Network (OON) Claims</h2>
         <form id="calc-form" class="space-y-4">
           <div class="grid grid-cols-2 gap-4">
             <!-- Monthly out‑of‑network cases -->
             <label class="col-span-2">
-              <span class="text-sm text-slate-600">What is your Monthly OON Cases?</span>
+              <span class="text-sm text-slate-600">What is the monthly volume of your OON cases?</span>
               <input id="cases" type="number" inputmode="numeric" min="0" placeholder="50" class="mt-1 w-full rounded-xl border-slate-300 focus:border-[var(--cp-primary)] focus:ring-[var(--cp-primary)]"/>
             </label>
             <!-- Average allowed amount per case -->
             <label>
-              <span class="text-sm text-slate-600">What is your AVG Allowed Amount per Case for OON Claims?</span>
+              <span class="text-sm text-slate-600">What is the Avg. Allowed Amount per OON claim?</span>
               <input id="avgCharge" type="number" inputmode="decimal" min="0" placeholder="1500" class="mt-1 w-full rounded-xl border-slate-300 focus:border-[var(--cp-primary)] focus:ring-[var(--cp-primary)]"/>
             </label>
             <!-- Percentage of out‑of‑network claim denial -->
             <label>
-              <span class="text-sm text-slate-600">What is the Denial % for OON Claims?</span>
+              <span class="text-sm text-slate-600">What is the denial percentage for OON claims?</span>
               <input id="denialRate" type="number" inputmode="decimal" min="0" max="100" placeholder="50" class="mt-1 w-full rounded-xl border-slate-300 focus:border-[var(--cp-primary)] focus:ring-[var(--cp-primary)]"/>
             </label>
             <!-- Percentage of collection on remaining out‑of‑network claims (i.e. non‑denied claims) -->
             <label>
-              <span class="text-sm text-slate-600">What is the Collection % for remaining OON Claims?</span>
+              <span class="text-sm text-slate-600">What is the collection percentage for remaining OON claims?</span>
               <input id="collectionRate" type="number" inputmode="decimal" min="0" max="100" placeholder="25" class="mt-1 w-full rounded-xl border-slate-300 focus:border-[var(--cp-primary)] focus:ring-[var(--cp-primary)]"/>
             </label>
           </div>
